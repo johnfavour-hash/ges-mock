@@ -10,7 +10,13 @@ import themeSystem from "@configs/theme.config"
 export function Provider(props: ColorModeProviderProps) {
   return (
     <ChakraProvider value={themeSystem}>
-      <ColorModeProvider forcedTheme="light" {...props} />
+      <ColorModeProvider 
+        forcedTheme="light" 
+        disableTransitionOnChange={false} 
+        enableSystem={false} 
+        defaultTheme="light" 
+        {...props} 
+      />
     </ChakraProvider>
   )
 }

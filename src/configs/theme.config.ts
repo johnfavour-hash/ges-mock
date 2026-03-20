@@ -5,10 +5,7 @@ const config = defineConfig({
         body: {
             backgroundColor: "#F7FAFC",
             color: "#2E3192",
-            _dark: {
-                backgroundColor: "#1A202C",
-                color: "{colors.white}",
-            },
+            colorScheme: "light",
         },
     },
     theme: {
@@ -74,7 +71,6 @@ const config = defineConfig({
                     default: {
                         value: {
                             base: "{colors.gray.200}",
-                            _dark: "{colors.gray.200}",
                         },
                     },
                 },
