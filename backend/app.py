@@ -1,10 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sqlite3
 import os
 from datetime import datetime
 
-app = Flask(__name__)
+# Configure Flask to serve the React 'dist' folder
+# Look one level up (..) from the backend folder to find the frontend 'dist'
+dist_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'dist')
+app = Flask(__name__, static_folder=dist_path, static_url_path='/')
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Use absolute path for the database file
@@ -52,14 +55,6 @@ def init_db():
 
 # Call init_db immediately so it runs when Gunicorn starts the app
 init_db()
-
-@app.route('/')
-def home():
-    return jsonify({
-        "status": "online",
-        "message": "GES 100 Mock API is running!",
-        "version": "1.0.0"
-    })
 
 @app.errorhandler(Exception)
 def handle_exception(e):
@@ -189,6 +184,17 @@ def admin_results():
             WHERE u.role = 'student'
         ''').fetchall()
         return jsonify([dict(row) for row in results])
+
+# --- CATCH-ALL ROUTE FOR REACT FRONTEND ---
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    # If the file exists in the static folder (like an image or JS file), serve it
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        # Otherwise, send index.html (crucial for React Router client-side navigation)
+        return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
