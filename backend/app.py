@@ -4,9 +4,10 @@ import sqlite3
 import os
 from datetime import datetime
 
-# This finds the 'dist' folder by going UP one level from 'backend'
-base_dir = os.path.dirname(os.path.abspath(__file__))
-dist_path = os.path.normpath(os.path.join(base_dir, '..', 'dist'))
+# This finds the absolute path to the 'backend' folder
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# This goes up one level to the root, then into 'dist'
+dist_path = os.path.abspath(os.path.join(current_dir, '..', 'dist'))
 
 # Initialize Flask with a blank static_url_path to prevent collisions with the catch-all route
 app = Flask(__name__, static_folder=dist_path, static_url_path='')
