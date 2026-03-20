@@ -198,21 +198,28 @@ def admin_results():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react(path):
-    # Log the request for debugging 500 errors
+    # Log the request for debugging 404/500 errors
     print(f"Request for path: {path}")
     
-    # 1. Check if the file exists in the static folder (like an image or JS file)
+    # 1. If the request is for an API, Flask should handle it normally via other routes
+    if path.startswith("api/"):
+        return None # Let the other @app.route handle it
+    
+    # 2. Check if the file actually exists (like index.js, vite.svg, or a CSS file)
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     
-    # 2. Otherwise, check for index.html existence and serve it
-    # This is crucial for React Router client-side navigation
+    # 3. FOR EVERYTHING ELSE: Serve index.html
+    # This is the "magic" that makes React Router work on Render
     index_path = os.path.join(app.static_folder, 'index.html')
     if os.path.exists(index_path):
         return send_from_directory(app.static_folder, 'index.html')
     else:
         print(f"ERROR: index.html not found at {index_path}")
-        return jsonify({"error": "Frontend build not found. Please run 'npm run build'."}), 404
+        return jsonify({
+            "error": "Frontend build not found",
+            "details": f"Checked {index_path}. Please ensure 'npm run build' was successful."
+        }), 404
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
