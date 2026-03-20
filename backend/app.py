@@ -11,6 +11,7 @@ CORS(app)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, 'database.db')
 
+# Ensure the database is initialized when the module is imported (for Gunicorn)
 def get_db():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
@@ -18,33 +19,39 @@ def get_db():
 
 def init_db():
     print(f"Initializing database at {DATABASE}...")
-    with get_db() as db:
-        db.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                fullName TEXT,
-                email TEXT UNIQUE,
-                password TEXT,
-                role TEXT DEFAULT 'student'
-            )
-        ''')
-        db.execute('''
-            CREATE TABLE IF NOT EXISTS scores (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                userId INTEGER UNIQUE,
-                score INTEGER,
-                total INTEGER,
-                date TEXT,
-                FOREIGN KEY(userId) REFERENCES users(id)
-            )
-        ''')
-        # Seed Admin
-        admin = db.execute("SELECT id FROM users WHERE email = 'admin@dlcf.com'").fetchone()
-        if not admin:
-            db.execute("INSERT INTO users (fullName, email, password, role) VALUES (?, ?, ?, ?)",
-                       ('Admin User', 'admin@dlcf.com', 'admin123', 'admin'))
-        db.commit()
-    print("Database initialized.")
+    try:
+        with get_db() as db:
+            db.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    fullName TEXT,
+                    email TEXT UNIQUE,
+                    password TEXT,
+                    role TEXT DEFAULT 'student'
+                )
+            ''')
+            db.execute('''
+                CREATE TABLE IF NOT EXISTS scores (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    userId INTEGER UNIQUE,
+                    score INTEGER,
+                    total INTEGER,
+                    date TEXT,
+                    FOREIGN KEY(userId) REFERENCES users(id)
+                )
+            ''')
+            # Seed Admin
+            admin = db.execute("SELECT id FROM users WHERE email = 'admin@dlcf.com'").fetchone()
+            if not admin:
+                db.execute("INSERT INTO users (fullName, email, password, role) VALUES (?, ?, ?, ?)",
+                           ('Admin User', 'admin@dlcf.com', 'admin123', 'admin'))
+            db.commit()
+        print("Database initialized successfully.")
+    except Exception as e:
+        print(f"Error initializing database: {e}")
+
+# Call init_db immediately so it runs when Gunicorn starts the app
+init_db()
 
 @app.errorhandler(Exception)
 def handle_exception(e):
@@ -174,8 +181,6 @@ def admin_results():
             WHERE u.role = 'student'
         ''').fetchall()
         return jsonify([dict(row) for row in results])
-
-init_db()  # Initialize outside main block
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
