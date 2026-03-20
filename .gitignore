@@ -1,0 +1,33 @@
+# Node dependencies
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Python environment and cache
+backend/__pycache__/
+backend/venv/
+backend/.env
+backend/*.db
+backend/*.log
+
+# IDE and System files
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Build output
+build/
+out/
+
+# Env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

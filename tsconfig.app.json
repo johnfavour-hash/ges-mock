@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "types": ["vite/client","node"],
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      // "@/*": ["./src/*"],
+      "@configs/*": ["./src/configs/*"],
+      "@app/*": ["./src/app/*"],
+      "@stores/*": ["./src/stores/*"],
+      "@schemas/*": ["./src/schemas/*"],
+      "@components/*": ["./src/components/*"],
+      "@forms/*": ["./src/forms/*"],
+      "@pages/*": ["./src/app/pages/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@type/*": ["./src/types/*"],
+      "@services/*": ["./src/services/*"],
+      "@routes/*": ["src/routes/*"],
+    },
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["src"]
+}
