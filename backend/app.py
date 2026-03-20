@@ -189,12 +189,21 @@ def admin_results():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react(path):
-    # If the file exists in the static folder (like an image or JS file), serve it
+    # Log the request for debugging 500 errors
+    print(f"Request for path: {path}")
+    
+    # 1. Check if the file exists in the static folder (like an image or JS file)
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
-    else:
-        # Otherwise, send index.html (crucial for React Router client-side navigation)
+    
+    # 2. Otherwise, check for index.html existence and serve it
+    # This is crucial for React Router client-side navigation
+    index_path = os.path.join(app.static_folder, 'index.html')
+    if os.path.exists(index_path):
         return send_from_directory(app.static_folder, 'index.html')
+    else:
+        print(f"ERROR: index.html not found at {index_path}")
+        return jsonify({"error": "Frontend build not found. Please run 'npm run build'."}), 404
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
