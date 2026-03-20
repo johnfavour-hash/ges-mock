@@ -5,8 +5,10 @@ import os
 from datetime import datetime
 
 # Configure Flask to serve the React 'dist' folder
-# Look one level up (..) from the backend folder to find the frontend 'dist'
-dist_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'dist')
+# This finds the 'dist' folder by going UP one level from 'backend'
+base_dir = os.path.dirname(os.path.abspath(__file__))
+dist_path = os.path.normpath(os.path.join(base_dir, '..', 'dist'))
+
 app = Flask(__name__, static_folder=dist_path, static_url_path='/')
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
