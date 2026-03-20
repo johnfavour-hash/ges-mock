@@ -53,6 +53,14 @@ def init_db():
 # Call init_db immediately so it runs when Gunicorn starts the app
 init_db()
 
+@app.route('/')
+def home():
+    return jsonify({
+        "status": "online",
+        "message": "GES 100 Mock API is running!",
+        "version": "1.0.0"
+    })
+
 @app.errorhandler(Exception)
 def handle_exception(e):
     print(f"Unhandled Exception: {e}")
