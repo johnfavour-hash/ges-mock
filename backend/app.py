@@ -4,12 +4,12 @@ import sqlite3
 import os
 from datetime import datetime
 
-# Configure Flask to serve the React 'dist' folder
 # This finds the 'dist' folder by going UP one level from 'backend'
 base_dir = os.path.dirname(os.path.abspath(__file__))
 dist_path = os.path.normpath(os.path.join(base_dir, '..', 'dist'))
 
-app = Flask(__name__, static_folder=dist_path, static_url_path='/')
+# Initialize Flask with a blank static_url_path to prevent collisions with the catch-all route
+app = Flask(__name__, static_folder=dist_path, static_url_path='')
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Use absolute path for the database file
@@ -60,8 +60,15 @@ init_db()
 
 @app.errorhandler(Exception)
 def handle_exception(e):
-    print(f"Unhandled Exception: {e}")
-    return jsonify({"error": str(e)}), 500
+    # Detailed logging for debugging 500 errors on Render
+    print(f"--- SERVER ERROR ---")
+    print(f"Path: {request.path}")
+    print(f"Exception: {str(e)}")
+    return jsonify({
+        "error": "Internal Server Error",
+        "message": str(e),
+        "path": request.path
+    }), 500
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
