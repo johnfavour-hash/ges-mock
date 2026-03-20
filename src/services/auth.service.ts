@@ -1,11 +1,11 @@
 import type { LoginData, SignupFormData } from "@type/auth.type";
 import axios from "axios";
 
-// Using 127.0.0.1 can be more reliable than 'localhost' in some environments
-const API_URL = "http://127.0.0.1:5000/api";
+// Using VITE_API_URL from environment variables, fallback to localhost for development
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: `${API_URL}/api`,
     headers: {
         "Content-Type": "application/json",
     },
