@@ -15,8 +15,8 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useEffect, useState, useCallback } from "react";
-import { ScoreService, StudentResult } from "@services/score.service";
-import { Users, Search, Award, Calendar, LogOut, RefreshCw, Download } from "lucide-react";
+import { ScoreService, type StudentResult } from "@services/score.service";
+import { Users, Award, Calendar, LogOut, RefreshCw, Download } from "lucide-react";
 import { Button } from "@components/ui/button";
 import useAuthStore from "@stores/auth.store";
 import { useNavigate } from "react-router";

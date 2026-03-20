@@ -7,7 +7,7 @@ const useSignupForm = () => {
     return useForm<SignupFormData>({
         resolver: zodResolver(signupSchema),
         defaultValues: {
-            name: "",
+            fullName: "",
             email: "",
             password: "",
         },

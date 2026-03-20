@@ -30,7 +30,7 @@ export interface LoginResponse {
 // signup
 export type { SignupFormData } from "@schemas/auth/signup.schema";
 export interface SignupData {
-    name: string;
+    fullName: string;
     email: string;
     password: string;
 }

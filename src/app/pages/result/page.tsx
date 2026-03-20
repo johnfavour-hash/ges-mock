@@ -18,7 +18,7 @@ import {
   AccordionContent,
 } from "@components/ui/accordion";
 import { useNavigate } from "react-router";
-import { CheckCircle, XCircle, Home, RefreshCcw, Info } from "lucide-react";
+import { CheckCircle, XCircle, Home, Info } from "lucide-react";
 import useAuthStore from "@stores/auth.store";
 import { ScoreService } from "@services/score.service";
 

@@ -13,7 +13,7 @@ import {
 import { useState, useEffect, useCallback } from "react";
 import { GES100_QUESTIONS } from "@services/questions";
 import { Button } from "@components/ui/button";
-import { RadioGroup, Radio, RadioText, RadioControl } from "@components/ui/radio-group";
+import { RadioGroup, Radio, RadioText } from "@components/ui/radio-group";
 import {
   DialogActionTrigger,
   DialogBody,
@@ -196,14 +196,14 @@ const ExamPage = () => {
                 </Heading>
                 {markedForReview.has(currentIdx) && (
                   <HStack color="orange.500" fontSize="2xs" fontWeight="bold">
-                    <Icon as={Bookmark} fill="currentColor" size="10px" />
+                    <Icon as={Bookmark} fill="currentColor" boxSize="10px" />
                     <Text>Marked</Text>
                   </HStack>
                 )}
               </VStack>
               <HStack gap={{ base: 3, md: 6 }}>
                 <HStack color={timeLeft < 300 ? "red.500" : "brand.navy"} gap={1}>
-                  <Icon as={Clock} size={{ base: "14px", md: "20px" }} />
+                  <Icon as={Clock} boxSize={{ base: "14px", md: "20px" }} />
                   <Text fontWeight="bold" fontSize={{ base: "md", md: "lg" }}>{formatTime(timeLeft)}</Text>
                 </HStack>
                 
@@ -265,7 +265,7 @@ const ExamPage = () => {
 
               <RadioGroup
                 value={answers[currentIdx] || ""}
-                onValueChange={(details) => setAnswers(prev => ({ ...prev, [currentIdx]: details.value }))}
+                onValueChange={(details) => setAnswers(prev => ({ ...prev, [currentIdx]: details.value ?? "" }))}
                 w="full"
               >
                 <Stack gap={{ base: 2, md: 4 }} w="full">

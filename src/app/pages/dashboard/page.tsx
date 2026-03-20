@@ -104,7 +104,7 @@ const DashboardPage = () => {
                         <Text fontSize="sm" opacity={0.8}>Final Score</Text>
                         <Heading size="2xl">{existingScore.score} / {existingScore.total}</Heading>
                       </VStack>
-                      <Icon as={Award} size="48px" color="brand.orange" />
+                      <Icon as={Award} boxSize="48px" color="brand.orange" />
                     </HStack>
                   </Box>
                   <Text color="gray.600">
