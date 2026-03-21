@@ -1,12 +1,16 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from werkzeug.exceptions import HTTPException
 import sqlite3
 import os
 from datetime import datetime
 
 app = Flask(__name__)
 # IMPORTANT: This allows your Vercel URL to talk to this Render API
-CORS(app)
+CORS(app, origins=[
+    "https://ges-mock.vercel.app",
+    "http://localhost:5173"  # for local dev
+], supports_credentials=True)
 
 # Use absolute path for the database file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -62,6 +66,14 @@ def home():
         "message": "Johnfavour's GES Mock API is running!",
         "version": "1.0.0"
     })
+
+@app.errorhandler(HTTPException)
+def handle_http_exception(e):
+    return jsonify({
+        "error": e.name,
+        "message": e.description,
+        "path": request.path
+    }), e.code
 
 @app.errorhandler(Exception)
 def handle_exception(e):
