@@ -16,7 +16,8 @@ export const axiosClient = axios.create({
 
 // List of public endpoints that don't require auth token
 const PUBLIC_ENDPOINTS = [
-  "/v1/auth/login",
+  "/login",
+  "/signup",
   // Add any other public endpoints here
 ];
 
@@ -123,7 +124,7 @@ axiosClient.interceptors.response.use(
       _retry?: boolean;
     };
 
-    if (error.response?.status === 401 && originalRequest.url === "/auth/login") {
+    if (error.response?.status === 401 && originalRequest.url === "/login") {
       toaster.error({
         title: getErrorTitle(error),
         description: getErrorMessage(error),
