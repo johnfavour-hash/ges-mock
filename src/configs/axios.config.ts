@@ -6,7 +6,7 @@ import useAuthStore from "@stores/auth.store"
 
 
 export const axiosClient = axios.create({
-  baseURL: "/api",
+  baseURL: ENV.API_BASE_URL,
   timeout: ENV.API_TIMEOUT,
   withCredentials: true,
   headers: {

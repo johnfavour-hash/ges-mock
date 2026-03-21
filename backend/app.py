@@ -1,17 +1,12 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3
 import os
 from datetime import datetime
 
-# This finds the absolute path to the 'backend' folder
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# This goes up one level to the root, then into 'dist'
-dist_path = os.path.abspath(os.path.join(current_dir, '..', 'dist'))
-
-# Initialize Flask with a blank static_url_path to prevent collisions with the catch-all route
-app = Flask(__name__, static_folder=dist_path, static_url_path='')
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+app = Flask(__name__)
+# IMPORTANT: This allows your Vercel URL to talk to this Render API
+CORS(app)
 
 # Use absolute path for the database file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -194,33 +189,6 @@ def admin_results():
             WHERE u.role = 'student'
         ''').fetchall()
         return jsonify([dict(row) for row in results])
-
-# --- CATCH-ALL ROUTE FOR REACT FRONTEND ---
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_react(path):
-    # Log the request for debugging 404/500 errors
-    print(f"Request for path: {path}")
-    
-    # 1. If the request is for an API, Flask should handle it normally via other routes
-    if path.startswith("api/"):
-        return None # Let the other @app.route handle it
-    
-    # 2. Check if the file actually exists (like index.js, vite.svg, or a CSS file)
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-    
-    # 3. FOR EVERYTHING ELSE: Serve index.html
-    # This is the "magic" that makes React Router work on Render
-    index_path = os.path.join(app.static_folder, 'index.html')
-    if os.path.exists(index_path):
-        return send_from_directory(app.static_folder, 'index.html')
-    else:
-        print(f"ERROR: index.html not found at {index_path}")
-        return jsonify({
-            "error": "Frontend build not found",
-            "details": f"Checked {index_path}. Please ensure 'npm run build' was successful."
-        }), 404
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
