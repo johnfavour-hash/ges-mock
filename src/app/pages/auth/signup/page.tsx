@@ -41,12 +41,13 @@ const SignupPage = () => {
       navigate("/dashboard");
     } catch (error: any) {
       console.error("Full Signup Error:", error.response?.data);
-      const errorMessage = error.response?.data?.error || error.message || "Something went wrong";
-      const details = error.response?.data?.missing_fields ? `Missing: ${error.response.data.missing_fields.join(", ")}` : "";
+      const data = error.response?.data;
+      const errorMessage = (typeof data?.error === 'string' ? data.error : (data?.message || data?.details)) || error.message || "Something went wrong";
+      const details = data?.missing_fields ? `Missing: ${data.missing_fields.join(", ")}` : "";
       
       toaster.create({
         title: "Signup Failed",
-        description: `${errorMessage} ${details}`,
+        description: `${typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage)} ${details}`,
         type: "error",
       });
     } finally {

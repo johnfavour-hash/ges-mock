@@ -31,16 +31,25 @@ const isPublicEndpoint = (url: string = ''): boolean => {
 // Helper functions
 const getErrorMessage = (error: any): string => {
   if (error.response?.data) {
-    const { message, errors } = error.response.data;
+    const data = error.response.data;
+    // Check common error fields
+    const message = data.error || data.message || data.details;
 
-    if (errors && Array.isArray(errors) && errors.length > 0) {
-      return errors.map(err => `${err.field}: ${err.message}`).join(', ');
+    if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+      return data.errors.map((err: any) => {
+        const msg = typeof err === 'string' ? err : (err.message || JSON.stringify(err));
+        return err.field ? `${err.field}: ${msg}` : msg;
+      }).join(', ');
     }
 
-    return message || "Invalid request sent to the server.";
+    if (message && typeof message === 'object') {
+      return JSON.stringify(message);
+    }
+
+    return typeof message === 'string' ? message : "Invalid request sent to the server.";
   }
 
-  return error.message || "Invalid request sent to the server.";
+  return typeof error.message === 'string' ? error.message : "Invalid request sent to the server.";
 };
 
 const getErrorTitle = (error: AxiosError): string => {

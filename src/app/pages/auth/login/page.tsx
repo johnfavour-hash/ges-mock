@@ -49,10 +49,13 @@ const LoginPage = () => {
         navigate("/dashboard");
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.error || error.message || "Something went wrong";
+      console.error("Login Error:", error);
+      const data = error.response?.data;
+      const errorMessage = (typeof data?.error === 'string' ? data.error : (data?.message || data?.details)) || error.message || "Something went wrong";
+      
       toaster.create({
         title: "Login Failed",
-        description: errorMessage,
+        description: typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage),
         type: "error",
       });
     } finally {
