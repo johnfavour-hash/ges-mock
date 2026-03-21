@@ -54,6 +54,15 @@ def init_db():
 # Call init_db immediately so it runs when Gunicorn starts the app
 init_db()
 
+# HOME ROUTE: Just a welcome message to prove the backend is alive
+@app.route('/')
+def home():
+    return jsonify({
+        "status": "online",
+        "message": "Johnfavour's GES Mock API is running!",
+        "version": "1.0.0"
+    })
+
 @app.errorhandler(Exception)
 def handle_exception(e):
     # Detailed logging for debugging 500 errors on Render
